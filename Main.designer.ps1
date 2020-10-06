@@ -2,11 +2,13 @@ $frmMain = New-Object -TypeName System.Windows.Forms.Form
 [System.Windows.Forms.ComboBox]$cbSelectLab = $null
 [System.Windows.Forms.Label]$lblSelectLab = $null
 [System.Windows.Forms.Button]$btnGrade = $null
+[System.Windows.Forms.RichTextBox]$rtbResults = $null
 function InitializeComponent
 {
 $cbSelectLab = (New-Object -TypeName System.Windows.Forms.ComboBox)
 $lblSelectLab = (New-Object -TypeName System.Windows.Forms.Label)
 $btnGrade = (New-Object -TypeName System.Windows.Forms.Button)
+$rtbResults = (New-Object -TypeName System.Windows.Forms.RichTextBox)
 $frmMain.SuspendLayout()
 #
 #cbSelectLab
@@ -41,9 +43,20 @@ $btnGrade.UseCompatibleTextRendering = $true
 $btnGrade.UseVisualStyleBackColor = $true
 $btnGrade.add_Click($GradeLab)
 #
+#rtbResults
+#
+$rtbResults.Location = (New-Object -TypeName System.Drawing.Point -ArgumentList @([System.Int32]30,[System.Int32]292))
+$rtbResults.Name = [System.String]'rtbResults'
+$rtbResults.ReadOnly = $true
+$rtbResults.Size = (New-Object -TypeName System.Drawing.Size -ArgumentList @([System.Int32]816,[System.Int32]328))
+$rtbResults.TabIndex = [System.Int32]4
+$rtbResults.Text = [System.String]''
+$rtbResults.add_TextChanged($rtbResults_TextChanged)
+#
 #frmMain
 #
-$frmMain.ClientSize = (New-Object -TypeName System.Drawing.Size -ArgumentList @([System.Int32]883,[System.Int32]386))
+$frmMain.ClientSize = (New-Object -TypeName System.Drawing.Size -ArgumentList @([System.Int32]883,[System.Int32]644))
+$frmMain.Controls.Add($rtbResults)
 $frmMain.Controls.Add($btnGrade)
 $frmMain.Controls.Add($lblSelectLab)
 $frmMain.Controls.Add($cbSelectLab)
@@ -53,5 +66,6 @@ Add-Member -InputObject $frmMain -Name base -Value $base -MemberType NotePropert
 Add-Member -InputObject $frmMain -Name cbSelectLab -Value $cbSelectLab -MemberType NoteProperty
 Add-Member -InputObject $frmMain -Name lblSelectLab -Value $lblSelectLab -MemberType NoteProperty
 Add-Member -InputObject $frmMain -Name btnGrade -Value $btnGrade -MemberType NoteProperty
+Add-Member -InputObject $frmMain -Name rtbResults -Value $rtbResults -MemberType NoteProperty
 }
 . InitializeComponent
