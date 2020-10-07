@@ -14,10 +14,13 @@ $frmMain.SuspendLayout()
 #cbSelectLab
 #
 $cbSelectLab.DisplayMember = [System.String]'Name'
+$cbSelectLab.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+$cbSelectLab.Font = (New-Object -TypeName System.Drawing.Font -ArgumentList @([System.String]'Consolas',[System.Single]9.75,[System.Drawing.FontStyle]::Regular,[System.Drawing.GraphicsUnit]::Point,([System.Byte][System.Byte]0)))
 $cbSelectLab.FormattingEnabled = $true
 $cbSelectLab.Location = (New-Object -TypeName System.Drawing.Point -ArgumentList @([System.Int32]230,[System.Int32]120))
 $cbSelectLab.Name = [System.String]'cbSelectLab'
-$cbSelectLab.Size = (New-Object -TypeName System.Drawing.Size -ArgumentList @([System.Int32]409,[System.Int32]21))
+$cbSelectLab.Size = (New-Object -TypeName System.Drawing.Size -ArgumentList @([System.Int32]409,[System.Int32]23))
+$cbSelectLab.Sorted = $true
 $cbSelectLab.TabIndex = [System.Int32]0
 $cbSelectLab.ValueMember = [System.String]'File'
 #
@@ -45,9 +48,11 @@ $btnGrade.add_Click($GradeLab)
 #
 #rtbResults
 #
+$rtbResults.Font = (New-Object -TypeName System.Drawing.Font -ArgumentList @([System.String]'Consolas',[System.Single]14.25,[System.Drawing.FontStyle]::Bold,[System.Drawing.GraphicsUnit]::Point,([System.Byte][System.Byte]0)))
 $rtbResults.Location = (New-Object -TypeName System.Drawing.Point -ArgumentList @([System.Int32]30,[System.Int32]292))
 $rtbResults.Name = [System.String]'rtbResults'
 $rtbResults.ReadOnly = $true
+$rtbResults.ScrollBars = [System.Windows.Forms.RichTextBoxScrollBars]::Vertical
 $rtbResults.Size = (New-Object -TypeName System.Drawing.Size -ArgumentList @([System.Int32]816,[System.Int32]328))
 $rtbResults.TabIndex = [System.Int32]4
 $rtbResults.Text = [System.String]''
@@ -60,6 +65,7 @@ $frmMain.Controls.Add($rtbResults)
 $frmMain.Controls.Add($btnGrade)
 $frmMain.Controls.Add($lblSelectLab)
 $frmMain.Controls.Add($cbSelectLab)
+$frmMain.Font = (New-Object -TypeName System.Drawing.Font -ArgumentList @([System.String]'Tahoma',[System.Single]9.75,[System.Drawing.FontStyle]::Bold,[System.Drawing.GraphicsUnit]::Point,([System.Byte][System.Byte]0)))
 $frmMain.Text = [System.String]'Lab Grader'
 $frmMain.ResumeLayout($false)
 Add-Member -InputObject $frmMain -Name base -Value $base -MemberType NoteProperty

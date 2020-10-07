@@ -1,0 +1,29 @@
+<rubric>
+    <Lab>
+        <Labname>Lab-1</Labname>
+        <OwnCloudLocation>Practice</OwnCloudLocation>
+        <OwnCloudName>WS21UserAccounts.csv</OwnCloudName>
+        <RequiredProperties>
+            <Property>Name</Property>
+            <Property>Enabled</Property>
+            <Property>PasswordRequired</Property>
+            <Property>SID</Property>
+            <Property>PSComputername</Property>
+        </RequiredProperties>
+        <RequiredHosts>
+            <Host>WS21.vaoc.net</Host>
+            <IP>199.134.56.219</IP>
+        </RequiredHosts>
+        <MinimumRowCount>4</MinimumRowCount>
+        <RequiredData>
+            <Item>
+                <Name>Administrator</Name>
+                <Enabled>FALSE</Enabled>
+            </Item>
+            <Item>
+                <Name>Michael Ralph</Name>
+                <Enabled>True</Enabled>
+            </Item>
+        </RequiredData>
+    </Lab>
+</rubric>
