@@ -1,6 +1,0 @@
-#TYPE Microsoft.PowerShell.Commands.LocalUser,,,,,,,,,,,,,
-AccountExpires,Description,Enabled,Name,PasswordChangeableDate,PasswordExpires,UserMayChangePassword,PasswordRequired,PasswordLastSet,LastLogon,SID,PrincipalSource,ObjectClass,PSComputerName
-,Built-in account for administering the computer/domain,True,Clint.Barton,,,TRUE,TRUE,,4/27/2020 11:05,S-1-5-21-1025438829-2302907773-1309982554-500,Local,User,WS21.Vaoc.net
-,A user account managed by the system.,FALSE,,,,TRUE,FALSE,,,S-1-5-21-1025438829-2302907773-1309982554-503,Local,User,WS21.Vaoc.net
-,,TRUE,Michael Ralph,4/28/2020 15:13,,TRUE,TRUE,4/28/2020 15:13,,S-1-5-21-1025438829-2302907773-1309982554-1002,MicrosoftAccount,User,WS21.Vaoc.net
-,A user account managed and used by the system for Windows Defender Application Guard scenarios.,FALSE,,4/18/2019 23:58,5/30/2019 23:58,TRUE,TRUE,4/18/2019 23:58,,S-1-5-21-1025438829-2302907773-1309982554-504,Local,User,WS21.Vaoc.net
