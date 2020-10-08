@@ -1,5 +1,3 @@
-$rtbResults_TextChanged = {
-}
 # Loading Rubric into memory
 $testloc = "C:\Users\micha\OneDrive\Documents\GitHub\StudentGrader\StudentGrader"
 $rubricxmlfile = "C:\Users\micha\OneDrive\Documents\GitHub\StudentGrader\StudentGrader\Rubric.xml"
@@ -8,9 +6,23 @@ $rubric.LoadXml((Get-Content $rubricxmlfile))
 
 # The GradeLab script block will run when the user clicks the Grade button
 $GradeLab = {
+    # Make sure something is selected in the drop down
     if ($cbSelectLab.SelectedItem){
+        #assign current lab's rubric to a variable
         $curlabrubric = $rubric.rubric.Lab | Where-Object {$_.labname -eq $cbSelectLab.SelectedItem}
+        
         #Use OwnCloud automation to look for file and retrieve it
+        if (!(Test-Path -Path "$env:TEMP\occred.csv")) {
+            $OCCreds = Get-Credential -Message "Enter your Owncloud Credentials:"
+            $OCCreds |
+                Select-Object UserName, @{n="Password";e={$_.Password | ConvertFrom-SecureString}} |
+                    Export-Csv -Path "$env:TEMP\occred.csv"
+        }
+        else {
+            $import = Import-Csv -Path "$env:TEMP\occred.csv"
+            $OCCreds = New-Object -TypeName pscredential -ArgumentList $import.UserName, ($import.Password | ConvertTo-SecureString)
+        }
+
         $studentfile = Import-Csv -Path ("{0}\{1}" -f $testloc, $curlabrubric.OwnCloudName)
         $studentprops = $studentfile |
                             Get-Member | 
@@ -36,8 +48,27 @@ $GradeLab = {
                         Select-Object -ExpandProperty InputObject)
         if ($hostcheck.count -le $IPCheck.count) { 
             $missinghosts = $hostcheck
-            $splat.ReferenceObject = $curlabrubric.RequiredHosts.Host }
-        else { $missinghosts = $IPCheck }
+            $curlabrubric.RequiredData.ChildNodes |
+                ForEach-Object {
+                    $newnode = $rubric.CreateElement("PSComputerName")
+                    $newnode.InnerXml = $_.Hostname
+                    $_.AppendChild($newnode)
+                    $_.RemoveChild(($_.SelectSingleNode("IP")))
+                    $_.RemoveChild(($_.SelectSingleNode("Hostname")))
+                } # ForEach-Object
+            $splat.ReferenceObject = $curlabrubric.RequiredHosts.Host 
+        } #if
+        else { 
+            $missinghosts = $IPCheck
+            $curlabrubric.RequiredData.ChildNodes |
+                ForEach-Object{
+                    $newnode = $rubric.CreateElement("PSComputerName")
+                    $newnode.InnerXml = $_.IP
+                    $_.AppendChild($newnode)
+                    $_.RemoveChild(($_.SelectSingleNode("IP")))
+                    $_.RemoveChild(($_.SelectSingleNode("Hostname")))                    
+                } # foreach-Object
+        } #else
         $extrahosts = Compare-Object @splat |
                             Where-Object {$_.SideIndicator -eq "=>"} |
                                 Select-Object -ExpandProperty InputObject
@@ -78,13 +109,14 @@ $GradeLab = {
     else {$rtbResults.Text = "You must select a lab to grade!"}  
 } # Grade script block
 
-# Creating Form
+# adding form design code from file
 Add-Type -AssemblyName System.Windows.Forms
 . (Join-Path $PSScriptRoot 'Main.designer.ps1')
 
-# Load Drop Box
+# Load Drop Box data
 $rubric.rubric.lab |
     ForEach-Object {$cbSelectLab.Items.Add($_.labname) | Out-Null}
 
+# Display form
 $frmMain.ShowDialog()
 
