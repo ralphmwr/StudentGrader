@@ -3,12 +3,16 @@ $frmMain = New-Object -TypeName System.Windows.Forms.Form
 [System.Windows.Forms.Label]$lblSelectLab = $null
 [System.Windows.Forms.Button]$btnGrade = $null
 [System.Windows.Forms.RichTextBox]$rtbResults = $null
+[System.Windows.Forms.Label]$lblCreds = $null
+[System.Windows.Forms.Button]$btnLoadCreds = $null
 function InitializeComponent
 {
 $cbSelectLab = (New-Object -TypeName System.Windows.Forms.ComboBox)
 $lblSelectLab = (New-Object -TypeName System.Windows.Forms.Label)
 $btnGrade = (New-Object -TypeName System.Windows.Forms.Button)
 $rtbResults = (New-Object -TypeName System.Windows.Forms.RichTextBox)
+$lblCreds = (New-Object -TypeName System.Windows.Forms.Label)
+$btnLoadCreds = (New-Object -TypeName System.Windows.Forms.Button)
 $frmMain.SuspendLayout()
 #
 #cbSelectLab
@@ -58,9 +62,33 @@ $rtbResults.TabIndex = [System.Int32]4
 $rtbResults.Text = [System.String]''
 $rtbResults.add_TextChanged($rtbResults_TextChanged)
 #
+#lblCreds
+#
+$lblCreds.ForeColor = [System.Drawing.Color]::Red
+$lblCreds.Location = (New-Object -TypeName System.Drawing.Point -ArgumentList @([System.Int32]617,[System.Int32]9))
+$lblCreds.Name = [System.String]'lblCreds'
+$lblCreds.Size = (New-Object -TypeName System.Drawing.Size -ArgumentList @([System.Int32]254,[System.Int32]23))
+$lblCreds.TabIndex = [System.Int32]5
+$lblCreds.Text = [System.String]'OwnCloud Credentiials NOT Loaded'
+$lblCreds.TextAlign = [System.Drawing.ContentAlignment]::MiddleCenter
+$lblCreds.UseCompatibleTextRendering = $true
+#
+#btnLoadCreds
+#
+$btnLoadCreds.Location = (New-Object -TypeName System.Drawing.Point -ArgumentList @([System.Int32]617,[System.Int32]35))
+$btnLoadCreds.Name = [System.String]'btnLoadCreds'
+$btnLoadCreds.Size = (New-Object -TypeName System.Drawing.Size -ArgumentList @([System.Int32]254,[System.Int32]31))
+$btnLoadCreds.TabIndex = [System.Int32]6
+$btnLoadCreds.Text = [System.String]'Load OwnCloud Credentials'
+$btnLoadCreds.UseCompatibleTextRendering = $true
+$btnLoadCreds.UseVisualStyleBackColor = $true
+$btnLoadCreds.add_Click($OwnCloudCredsScript)
+#
 #frmMain
 #
 $frmMain.ClientSize = (New-Object -TypeName System.Drawing.Size -ArgumentList @([System.Int32]883,[System.Int32]644))
+$frmMain.Controls.Add($btnLoadCreds)
+$frmMain.Controls.Add($lblCreds)
 $frmMain.Controls.Add($rtbResults)
 $frmMain.Controls.Add($btnGrade)
 $frmMain.Controls.Add($lblSelectLab)
@@ -73,5 +101,7 @@ Add-Member -InputObject $frmMain -Name cbSelectLab -Value $cbSelectLab -MemberTy
 Add-Member -InputObject $frmMain -Name lblSelectLab -Value $lblSelectLab -MemberType NoteProperty
 Add-Member -InputObject $frmMain -Name btnGrade -Value $btnGrade -MemberType NoteProperty
 Add-Member -InputObject $frmMain -Name rtbResults -Value $rtbResults -MemberType NoteProperty
+Add-Member -InputObject $frmMain -Name lblCreds -Value $lblCreds -MemberType NoteProperty
+Add-Member -InputObject $frmMain -Name btnLoadCreds -Value $btnLoadCreds -MemberType NoteProperty
 }
 . InitializeComponent

@@ -1,8 +1,54 @@
+
+$rtbResults_TextChanged = {
+}
+# adding form design code from file
+Add-Type -AssemblyName System.Windows.Forms
+. (Join-Path $PSScriptRoot 'Main.designer.ps1')
+
 # Loading Rubric into memory
-$testloc = "C:\Users\micha\OneDrive\Documents\GitHub\StudentGrader\StudentGrader"
-$rubricxmlfile = "C:\Users\micha\OneDrive\Documents\GitHub\StudentGrader\StudentGrader\Rubric.xml"
-$rubric = New-Object -TypeName System.xml.xmldocument
-$rubric.LoadXml((Get-Content $rubricxmlfile))
+$ErrorActionPreference = "Stop"
+try {
+    $testloc = "C:\Users\micha\OneDrive\Documents\GitHub\StudentGrader\StudentGrader"
+    $rubricxmlfile = "C:\Users\micha\OneDrive\Documents\GitHub\StudentGrader\StudentGrader\Rubric.xml"
+    $encriptedcontent = Get-Content -Path $rubricxmlfile -Raw
+    $rubric = New-Object -TypeName System.xml.xmldocument
+    $rubric.LoadXml(($encriptedcontent | Unprotect-CmsMessage -To "CN=CVAH-Rubric"))
+}
+catch {
+    $rtbResults.Text = "THERE WAS A PROBLEM LOADING THE RUBRIC. ERROR DETAILS BELOW:`n" + $PSItem
+    $btnGrade.Enabled = $false
+}
+$ErrorActionPreference = "Continue"
+
+#Set Owncloud Creds Script Block
+$OwnCloudCredsScript = {
+    $OCCreds = Get-Credential -Message "Enter your Owncloud Credentials:"
+    $OCCreds |
+        Select-Object UserName, @{n="Password";e={$_.Password | ConvertFrom-SecureString}} |
+            Export-Csv -Path "$env:TEMP\occred.csv"
+    $lblCreds.Text = "OwnCloud Credentials Loaded"
+    $lblCreds.ForeColor = [System.Drawing.Color]::Green
+    $btnLoadCreds.Text = "Re-load OwnCloud Credentials"
+} #OwnCloud Creds Script Block
+
+# Loading Creds
+if (!(Test-Path -Path "$env:TEMP\occred.csv")) {
+    $OwnCloudCredsScript.Invoke()
+}
+else {
+    $ErrorActionPreference = "Stop"
+    try {
+        $import = Import-Csv -Path "$env:TEMP\occred.csv"
+        $OCCreds = New-Object -TypeName pscredential -ArgumentList $import.UserName, ($import.Password | ConvertTo-SecureString)
+        $lblCreds.Text = "OwnCloud Credentials Loaded"
+        $lblCreds.ForeColor = [System.Drawing.Color]::Green
+        $btnLoadCreds.Text = "Re-load OwnCloud Credentials"
+    }
+    catch {
+        $OwnCloudCredsScript.Invoke()
+    }    
+    $ErrorActionPreference = "Continue"
+} # Loading Creds
 
 # The GradeLab script block will run when the user clicks the Grade button
 $GradeLab = {
@@ -12,18 +58,8 @@ $GradeLab = {
         $curlabrubric = $rubric.rubric.Lab | Where-Object {$_.labname -eq $cbSelectLab.SelectedItem}
         
         #Use OwnCloud automation to look for file and retrieve it
-        if (!(Test-Path -Path "$env:TEMP\occred.csv")) {
-            $OCCreds = Get-Credential -Message "Enter your Owncloud Credentials:"
-            $OCCreds |
-                Select-Object UserName, @{n="Password";e={$_.Password | ConvertFrom-SecureString}} |
-                    Export-Csv -Path "$env:TEMP\occred.csv"
-        }
-        else {
-            $import = Import-Csv -Path "$env:TEMP\occred.csv"
-            $OCCreds = New-Object -TypeName pscredential -ArgumentList $import.UserName, ($import.Password | ConvertTo-SecureString)
-        }
-
         $studentfile = Import-Csv -Path ("{0}\{1}" -f $testloc, $curlabrubric.OwnCloudName)
+
         $studentprops = $studentfile |
                             Get-Member | 
                                 Where-Object MemberType -eq "NoteProperty" | 
@@ -109,9 +145,6 @@ $GradeLab = {
     else {$rtbResults.Text = "You must select a lab to grade!"}  
 } # Grade script block
 
-# adding form design code from file
-Add-Type -AssemblyName System.Windows.Forms
-. (Join-Path $PSScriptRoot 'Main.designer.ps1')
 
 # Load Drop Box data
 $rubric.rubric.lab |
