@@ -13,6 +13,8 @@ try {
     $encriptedcontent = Get-Content -Path $rubricxmlfile -Raw
     $rubric = New-Object -TypeName System.xml.xmldocument
     $rubric.LoadXml(($encriptedcontent | Unprotect-CmsMessage -To "CN=CVAH-Rubric"))
+    $rubric.rubric.lab |
+        ForEach-Object {$cbSelectLab.Items.Add($_.labname) | Out-Null}
 }
 catch {
     $rtbResults.Text = "THERE WAS A PROBLEM LOADING THE RUBRIC. ERROR DETAILS BELOW:`n" + $PSItem
@@ -144,11 +146,6 @@ $GradeLab = {
     } #if
     else {$rtbResults.Text = "You must select a lab to grade!"}  
 } # Grade script block
-
-
-# Load Drop Box data
-$rubric.rubric.lab |
-    ForEach-Object {$cbSelectLab.Items.Add($_.labname) | Out-Null}
 
 # Display form
 $frmMain.ShowDialog()
