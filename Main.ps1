@@ -57,10 +57,10 @@ $GradeLab = {
     # Make sure something is selected in the drop down
     if ($cbSelectLab.SelectedItem){
         #assign current lab's rubric to a variable
-        $curlabrubric = $rubric.rubric.Lab | Where-Object {$_.labname -eq $cbSelectLab.SelectedItem}
+        $curlabrubric = $rubric.rubric.Lab | Where-Object {$_.name -eq $cbSelectLab.SelectedItem}
         
         #Use OwnCloud automation to look for file and retrieve it
-        $studentfile = Import-Csv -Path ("{0}\{1}" -f $testloc, $curlabrubric.OwnCloudName)
+        $studentfile = Import-Csv -Path ("O:\{0}\{1}" -f $testloc, $curlabrubric.OwnCloudName)
 
         $studentprops = $studentfile |
                             Get-Member | 
@@ -75,7 +75,7 @@ $GradeLab = {
         $missingprops = @(Compare-Object @splat | 
                             Where-Object {$_.SideIndicator -eq "<="} | 
                                 Select-Object -ExpandProperty InputObject)
-        $splat.ReferenceObject  = $curlabrubric.RequiredHosts.Host
+        $splat.ReferenceObject  = $curlabrubric.RequiredHosts.Hostname
         $splat.DifferenceObject = $studenthosts
         $hostcheck = @(Compare-Object @splat |
                         Where-Object {$_.SideIndicator -eq "<="} |
@@ -94,7 +94,7 @@ $GradeLab = {
                     $_.RemoveChild(($_.SelectSingleNode("IP")))
                     $_.RemoveChild(($_.SelectSingleNode("Hostname")))
                 } # ForEach-Object
-            $splat.ReferenceObject = $curlabrubric.RequiredHosts.Host 
+            $splat.ReferenceObject = $curlabrubric.RequiredHosts.Hostname 
         } #if
         else { 
             $missinghosts = $IPCheck
